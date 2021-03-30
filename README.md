@@ -1,7 +1,8 @@
 # YoungCha
 
 ### HOW TO
-if you confused, follow the example lines
+Follow the example lines for the first try
+
 ### clone repository
 ```
 git clone https://github.com/choij1589/YoungCha.git
@@ -19,7 +20,7 @@ git checkout main
 ### pull: get files from github
 ```
 git pull $REMOTE $BRANCH
-# for example,
+# example
 git pull origin main
 ```
 ### add & commmit & push
@@ -31,7 +32,7 @@ git add .
 git commit -m "message"
 git push $REMOTE $BRANCH
 
-# for example
+# example
 git status -s
 git add .
 git commit "regular backup"

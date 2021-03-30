@@ -1,4 +1,4 @@
-# YoungCha hello
+# YoungCha
 
 ### HOW TO
 Follow the example lines for the first try

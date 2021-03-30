@@ -1,6 +1,6 @@
 # YoungCha
 
-### HOW TO USE GITHUB
+### HOW TO
 if you confused, follow the example lines
 ### clone repository
 ```
@@ -37,3 +37,4 @@ git add .
 git commit "regular backup"
 git push origin main
 ```
+---

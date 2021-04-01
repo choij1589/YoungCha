@@ -20,9 +20,10 @@ df = df.dropna()
 #df['rtn'] = df['Close'].pct_change()
 #df['acc_rtn'] = (1.0 + df['rtn']).cumprod()
 
-# create train dataset
-TrainMaker = CandlestickMaker(df, "2014-06-01", "2019-12-31")
+# train dataset
+TrainMaker = CandlestickMaker(df, "2015-01-01", "2019-12-31")
 TrainMaker.ohlc_to_candlestick(days=5, coin_name="coin_Bitcoin", train=True, use_volume=False)
 
+# test dataset
 TestMaker = CandlestickMaker(df, "2020-01-01", "2020-12-31")
 TestMaker.ohlc_to_candlestick(days=5, coin_name="coin_Bitcoin", train=False, use_volume=False)

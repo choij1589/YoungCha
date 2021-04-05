@@ -63,6 +63,7 @@ class CandlestickMaker():
         sample['number'] = sample.index.map(mdates.date2num)
 
         plt.style.use('dark_background')
+        #plt.style.use('classic')
 
         # make labels
         # Labels are based on the last n days candlesticks, which makes more easy to deal with index

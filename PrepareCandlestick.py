@@ -5,6 +5,7 @@ from AnalysisTools.CandlestickMaker import CandlestickMaker
 
 df = pd.read_csv("./data/coin_Bitcoin.csv")
 df = df[['Date', 'High', 'Low', 'Open', 'Close', 'Volume']]
+df['MA20'] = df['Close'].rolling(window=20).mean()
 
 # preprocess
 for idx in df.index:

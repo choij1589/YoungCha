@@ -92,6 +92,7 @@ class CandlestickMaker():
             ax1 = fig.add_subplot(1, 1, 1)
             candlestick2_ochl(ax1, ohlc['Open'], ohlc['Close'], ohlc['High'], ohlc['Low'],
                                 width=1, colorup='#77d879', colordown='#db3f3f')
+            plt.plot(ohlc.index, ohlc["MA20"], "g--")
             ax1.grid(False)
             ax1.set_xticklabels([])
             ax1.set_yticklabels([])
@@ -115,4 +116,4 @@ class CandlestickMaker():
             pngfile = os.path.join(base_dir, label, date.strftime("%Y-%m-%d")+".png")
             fig.savefig(pngfile, pad_inches=0, transparent=False)
             plt.close()
-        print("==== Conversion for {coin_name} is finished\n")
+        print(f"==== Conversion for {coin_name} is finished\n")

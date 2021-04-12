@@ -4,7 +4,7 @@ warnings.filterwarnings(action='ignore')
 import pandas as pd
 import matplotlib.pyplot as plt
 import matplotlib.dates as mdates
-from mpl_finance import candlestick2_ochl, volume_overlay
+from mpl_finance import candlestick_ohlc, volume_overlay
 from datetime import datetime, timedelta
 
 class CandlestickMaker():
@@ -62,8 +62,8 @@ class CandlestickMaker():
         sample = self.cushion.copy()
         sample['number'] = sample.index.map(mdates.date2num)
 
-        plt.style.use('dark_background')
-        #plt.style.use('classic')
+        #plt.style.use('dark_background')
+        plt.style.use('classic')
 
         # make labels
         # Labels are based on the last n days candlesticks, which makes more easy to deal with index
@@ -85,14 +85,14 @@ class CandlestickMaker():
                 label = "down"
             
             ohlc = sample.iloc[idx-days:idx, :]
+            candles = ohlc[['number', 'Open', 'High', 'Low', 'Close']].copy()
             idx += 1
             dimension = 512
             my_dpi = 96
             fig = plt.figure(figsize=(dimension/my_dpi, dimension/my_dpi), dpi=my_dpi)
             ax1 = fig.add_subplot(1, 1, 1)
-            candlestick2_ochl(ax1, ohlc['Open'], ohlc['Close'], ohlc['High'], ohlc['Low'],
-                                width=1, colorup='#77d879', colordown='#db3f3f')
-            ax1.plot(ohlc.index, ohlc["MA20"], "g--")
+            candlestick_ohlc(ax1, candles.values, width=1., colorup='red', colordown='blue')
+            ax1.plot(ohlc.index, ohlc['MA20'], 'c--', marker='o', markersize=3)
             ax1.grid(False)
             ax1.set_xticklabels([])
             ax1.set_yticklabels([])

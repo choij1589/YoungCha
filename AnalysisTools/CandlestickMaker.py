@@ -1,11 +1,13 @@
-import os, shutil
+from datetime import datetime, timedelta
+from mpl_finance import candlestick_ohlc, volume_overlay
+import matplotlib.dates as mdates
+import matplotlib.pyplot as plt
+import pandas as pd
+import os
+import shutil
 import warnings
 warnings.filterwarnings(action='ignore')
-import pandas as pd
-import matplotlib.pyplot as plt
-import matplotlib.dates as mdates
-from mpl_finance import candlestick_ohlc, volume_overlay
-from datetime import datetime, timedelta
+
 
 class CandlestickMaker():
     def __init__(self, sample, start_date, end_date):
@@ -36,7 +38,8 @@ class CandlestickMaker():
 
     def ohlc_to_candlestick(self, coin_name="coin_Bitcoin", days=5, train=True, use_volume=False):
         # make directories to data folder
-        base_dir = os.getcwd() + "/data/Candlesticks/" + coin_name + "/" + str(days) + "days"
+        base_dir = os.getcwd() + "/data/Candlesticks/" + \
+            coin_name + "/" + str(days) + "days"
         if use_volume:
             base_dir += "/ohlcv"
         else:
@@ -53,7 +56,8 @@ class CandlestickMaker():
             os.makedirs(base_dir+"/up")
             os.makedirs(base_dir+"/down")
         except:
-            print(f"==== Warning! directory '{base_dir}' exists! Force to overwrite")
+            print(
+                f"==== Warning! directory '{base_dir}' exists! Force to overwrite")
             shutil.rmtree(base_dir)
             os.makedirs(base_dir)
             os.makedirs(base_dir+"/up")
@@ -62,8 +66,8 @@ class CandlestickMaker():
         sample = self.cushion.copy()
         sample['number'] = sample.index.map(mdates.date2num)
 
-        #plt.style.use('dark_background')
-        plt.style.use('classic')
+        plt.style.use('dark_background')
+        # plt.style.use('classic')
 
         # make labels
         # Labels are based on the last n days candlesticks, which makes more easy to deal with index
@@ -74,46 +78,65 @@ class CandlestickMaker():
             if date < self.start_date:
                 idx += 1
                 continue
-            
+
             if date != sample.index[idx]:
-                print(f"==== Warning: {date} and {sample.index[idx]} is not equal!")
-            
+                print(
+                    f"==== Warning: {date} and {sample.index[idx]} is not equal!")
+
             label = ""
             if sample.loc[date, 'Close'] > sample.loc[date, 'Open']:
                 label = "up"
             else:
                 label = "down"
-            
+
             ohlc = sample.iloc[idx-days:idx, :]
             candles = ohlc[['number', 'Open', 'High', 'Low', 'Close']].copy()
             idx += 1
             dimension = 512
             my_dpi = 96
-            fig = plt.figure(figsize=(dimension/my_dpi, dimension/my_dpi), dpi=my_dpi)
+            fig = plt.figure(figsize=(dimension/my_dpi,
+                       dimension/my_dpi), dpi=my_dpi)
             ax1 = fig.add_subplot(1, 1, 1)
-            candlestick_ohlc(ax1, candles.values, width=1., colorup='red', colordown='blue')
-            ax1.plot(ohlc.index, ohlc['MA20'], 'c--', marker='o', markersize=3)
+            #ax1 = plt.subplot2grid((4, 1), (0, 0), rowspan=3)
+            candlestick_ohlc(ax1, candles.values, width=1.,
+                             colorup='red', colordown='blue')
+            ax1.plot(ohlc.index, ohlc['EMA20'],
+                     'c--', marker='o', markersize=3)
             ax1.grid(False)
             ax1.set_xticklabels([])
             ax1.set_yticklabels([])
             ax1.xaxis.set_visible(False)
             ax1.yaxis.set_visible(False)
             ax1.axis('off')
-           
+
             if use_volume:
-                ax2 = ax1.twinx()
-                bc = volume_overlay(ax2, ohlc['Open'], ohlc['Close'], ohlc['Volume'],
-                                    width=1, colorup='#77d879', colordown='#db3f3f', alpha=0.5)
-                ax2.add_collection(bc)
-                ax2.grid(False)
-                ax2.set_xticklabels([])
-                ax2.set_yticklabels([])
-                ax2.xaxis.set_visible(False)
-                ax2.yaxis.set_visible(False)
-                ax2.axis('off')
-            
+                print("volume overlay need fix")
+                #ax2 = ax1.twinx()
+                # bc = volume_overlay(ax2, ohlc['Open'], ohlc['Close'], ohlc['Volume'],
+                #                    width=1, colorup='#77d879', colordown='#db3f3f', alpha=0.5)
+                # ax2.add_collection(bc)
+                # ax2.grid(False)
+                # ax2.set_xticklabels([])
+                # ax2.set_yticklabels([])
+                # ax2.xaxis.set_visible(False)
+                # ax2.yaxis.set_visible(False)
+                # ax2.axis('off')
+
+            #ax2 = fig.add_subplot(2, 1, 2)
+            #ax2 = plt.subplot2grid((4, 1), (3, 0), rowspan=1)
+            #ax2.bar(ohlc.index, ohlc['MACD-hist'], color='c')
+            #ax2.plot(ohlc.index, ohlc['signal'], color='b')
+            #ax2.plot(ohlc.index, ohlc['MACD'], color='r')
+            # ax2.grid(False)
+            # ax2.set_xticklabels([])
+            # ax2.set_yticklabels([])
+            # ax2.xaxis.set_visible(False)
+            # ax2.yaxis.set_visible(False)
+            # ax2.axis('off')
+
             # save figure
-            pngfile = os.path.join(base_dir, label, date.strftime("%Y-%m-%d")+".png")
-            fig.savefig(pngfile, pad_inches=0, transparent=False)
+            pngfile = os.path.join(
+                base_dir, label, date.strftime("%Y-%m-%d")+".png")
+            plt.savefig(pngfile, pad_inches=0, transparent=False)
             plt.close()
         print(f"==== Conversion for {coin_name} is finished\n")

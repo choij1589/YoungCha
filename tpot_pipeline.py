@@ -9,8 +9,8 @@ features = tpot_data.drop('target', axis=1)
 training_features, testing_features, training_target, testing_target = \
             train_test_split(features, tpot_data['target'], random_state=42)
 
-# Average CV score on the training set was: 0.6412439837097372
-exported_pipeline = XGBClassifier(learning_rate=1.0, max_depth=9, min_child_weight=11, n_estimators=100, n_jobs=1, subsample=0.6000000000000001, verbosity=0)
+# Average CV score on the training set was: 0.6333333333333333
+exported_pipeline = XGBClassifier(learning_rate=0.5, max_depth=3, min_child_weight=13, n_estimators=100, n_jobs=1, subsample=1.0, verbosity=0)
 # Fix random state in exported estimator
 if hasattr(exported_pipeline, 'random_state'):
     setattr(exported_pipeline, 'random_state', 42)

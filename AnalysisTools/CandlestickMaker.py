@@ -84,7 +84,7 @@ class CandlestickMaker():
                     f"==== Warning: {date} and {sample.index[idx]} is not equal!")
 
             label = ""
-            if sample.loc[date, 'Close'] > sample.loc[date, 'Open']:
+            if (sample.loc[date, 'Close'] - sample.loc[date, 'Open']) / sample.loc[date, 'Close'] > 0.002:
                 label = "up"
             else:
                 label = "down"

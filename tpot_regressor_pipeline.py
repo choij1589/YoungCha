@@ -1,10 +1,10 @@
 import numpy as np
 import pandas as pd
-from sklearn.ensemble import GradientBoostingRegressor
-from sklearn.kernel_approximation import RBFSampler
+from sklearn.cluster import FeatureAgglomeration
+from sklearn.kernel_approximation import Nystroem
+from sklearn.linear_model import RidgeCV, SGDRegressor
 from sklearn.model_selection import train_test_split
 from sklearn.pipeline import make_pipeline, make_union
-from sklearn.svm import LinearSVR
 from tpot.builtins import StackingEstimator
 from tpot.export_utils import set_param_recursive
 
@@ -14,11 +14,17 @@ features = tpot_data.drop('target', axis=1)
 training_features, testing_features, training_target, testing_target = \
             train_test_split(features, tpot_data['target'], random_state=42)
 
-# Average CV score on the training set was: -5.830296700365016
+# Average CV score on the training set was: -5.853055578955521
 exported_pipeline = make_pipeline(
-    RBFSampler(gamma=0.75),
-    StackingEstimator(estimator=LinearSVR(C=1.0, dual=True, epsilon=0.01, loss="squared_epsilon_insensitive", tol=0.01)),
-    GradientBoostingRegressor(alpha=0.99, learning_rate=0.001, loss="lad", max_depth=9, max_features=0.6500000000000001, min_samples_leaf=15, min_samples_split=3, n_estimators=100, subsample=1.0)
+    make_union(
+        StackingEstimator(estimator=RidgeCV()),
+        make_pipeline(
+            FeatureAgglomeration(affinity="manhattan", linkage="complete"),
+            Nystroem(gamma=0.30000000000000004, kernel="sigmoid", n_components=5)
+        )
+    ),
+    FeatureAgglomeration(affinity="cosine", linkage="average"),
+    SGDRegressor(alpha=0.0, eta0=0.01, fit_intercept=False, l1_ratio=1.0, learning_rate="invscaling", loss="epsilon_insensitive", penalty="elasticnet", power_t=100.0)
 )
 # Fix random state for all the steps in exported pipeline
 set_param_recursive(exported_pipeline.steps, 'random_state', 42)
